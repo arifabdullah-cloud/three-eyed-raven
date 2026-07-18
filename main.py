@@ -41,6 +41,19 @@ def main() -> int:
 
     return 0
 
+    print("=" * 60)
+    print("Reading first article...")
+    print("=" * 60)
+
+    try:
+        content = read_article(articles[0].url)
+    except (ValueError, ArticleReadError) as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 1
+
+    print(f"\nExtracted {len(content.text)} characters.\n")
+    print(content.text[:1000])
+    print("\n[Output truncated]")
 
 def get_max_articles() -> int:
     raw_value = os.getenv("MAX_ARTICLES", "5")
