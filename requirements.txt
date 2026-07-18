@@ -1,4 +1,5 @@
 feedparser
-requests
 python-dotenv
+requests
 trafilatura
+lxml_html_clean
