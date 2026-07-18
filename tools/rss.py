@@ -2,15 +2,7 @@ from dataclasses import dataclass
 from typing import Any
 
 import feedparser
-
-
-@dataclass(frozen=True)
-class NewsArticle:
-    title: str
-    source: str
-    published: str
-    url: str
-
+from models.news_article import NewsArticle
 
 class RSSFeedError(Exception):
     """Raised when an RSS feed cannot be retrieved or parsed."""
