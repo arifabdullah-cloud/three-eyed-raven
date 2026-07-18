@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 from models.news_article import NewsArticle
 from tools.rss import RSSFeedError, fetch_articles
-
+from tools.reader import ArticleReadError, read_article
 
 DEFAULT_FEED_URL = "https://www.wired.com/feed/tag/ai/latest/rss"
 
