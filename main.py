@@ -3,7 +3,8 @@ import sys
 
 from dotenv import load_dotenv
 
-from tools.rss import RSSFeedError, NewsArticle, fetch_articles
+from models.news_article import NewsArticle
+from tools.rss import RSSFeedError, fetch_articles
 
 
 DEFAULT_FEED_URL = "https://www.wired.com/feed/tag/ai/latest/rss"
