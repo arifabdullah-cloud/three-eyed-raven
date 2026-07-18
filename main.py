@@ -4,8 +4,9 @@ import sys
 from dotenv import load_dotenv
 
 from models.news_article import NewsArticle
-from tools.rss import RSSFeedError, fetch_articles
 from tools.reader import ArticleReadError, read_article
+from tools.rss import RSSFeedError, fetch_articles
+
 
 DEFAULT_FEED_URL = "https://www.wired.com/feed/tag/ai/latest/rss"
 
@@ -39,8 +40,6 @@ def main() -> int:
     for position, article in enumerate(articles, start=1):
         print_article(position, article)
 
-    return 0
-
     print("=" * 60)
     print("Reading first article...")
     print("=" * 60)
@@ -54,6 +53,9 @@ def main() -> int:
     print(f"\nExtracted {len(content.text)} characters.\n")
     print(content.text[:1000])
     print("\n[Output truncated]")
+
+    return 0
+
 
 def get_max_articles() -> int:
     raw_value = os.getenv("MAX_ARTICLES", "5")
