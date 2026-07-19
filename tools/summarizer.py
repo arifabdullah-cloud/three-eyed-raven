@@ -1,4 +1,5 @@
 import os
+from typing import Optional
 
 from openai import OpenAI, OpenAIError
 
@@ -14,7 +15,7 @@ class ArticleSummaryError(Exception):
 def summarize_article(
     title: str,
     article_text: str,
-    model: str | None = None,
+    model: Optional[str] = None,
 ) -> str:
     """
     Summarize an article using an OpenAI model.
