@@ -70,7 +70,15 @@ def main() -> int:
         return 1
 
     print()
-    print(summary)
+    print("Overview:")
+    print(summary.overview)
+
+    print("\nKey points:")
+    for point in summary.key_points:
+        print(f"- {point}")
+
+    print("\nWhy it matters:")
+    print(summary.why_it_matters)
     print()
 
     return 0
