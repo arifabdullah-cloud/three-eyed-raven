@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 from models.news_article import NewsArticle
 from tools.reader import ArticleReadError, read_article
 from tools.rss import RSSFeedError, fetch_articles
+from tools.summarizer import ArticleSummaryError, summarize_article
 
 
 DEFAULT_FEED_URL = "https://www.wired.com/feed/tag/ai/latest/rss"
@@ -53,6 +54,24 @@ def main() -> int:
     print(f"\nExtracted {len(content.text)} characters.\n")
     print(content.text[:1000])
     print("\n[Output truncated]")
+
+    print()
+    print("=" * 60)
+    print("Summarizing first article...")
+    print("=" * 60)
+
+    try:
+        summary = summarize_article(
+            title=articles[0].title,
+            article_text=content.text,
+        )
+    except (ValueError, ArticleSummaryError) as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 1
+
+    print()
+    print(summary)
+    print()
 
     return 0
 
