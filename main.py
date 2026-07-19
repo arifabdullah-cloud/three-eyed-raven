@@ -4,8 +4,8 @@ import sys
 from dotenv import load_dotenv
 
 from models.news_article import NewsArticle
-from tools.rss import RSSFeedError, fetch_articles
 from services.report_builder import build_daily_report
+from tools.rss import RSSFeedError, fetch_articles
 
 
 DEFAULT_FEED_URL = "https://www.wired.com/feed/tag/ai/latest/rss"
@@ -16,6 +16,29 @@ def main() -> int:
 
     feed_url = os.getenv("RSS_FEED_URL", DEFAULT_FEED_URL)
     max_articles = get_max_articles()
+
+    print("=" * 60)
+    print("Three-Eyed Raven")
+    print("=" * 60)
+    print("\nFetching latest AI news...\n")
+
+    try:
+        articles = fetch_articles(
+            feed_url=feed_url,
+            max_articles=max_articles,
+        )
+    except (ValueError, RSSFeedError) as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 1
+
+    if not articles:
+        print("No articles were found.")
+        return 0
+
+    print(f"Retrieved {len(articles)} article(s).\n")
+
+    for position, article in enumerate(articles, start=1):
+        print_article(position, article)
 
     print("=" * 60)
     print("Building daily report...")
@@ -43,38 +66,6 @@ def main() -> int:
         print(f"{position}. {item.article.title}")
         print(f"   Overview: {item.summary.overview}")
         print()
-
-    return 0
-    
-    print(f"\nExtracted {len(content.text)} characters.\n")
-    print(content.text[:1000])
-    print("\n[Output truncated]")
-
-    print()
-    print("=" * 60)
-    print("Summarizing first article...")
-    print("=" * 60)
-
-    try:
-        summary = summarize_article(
-            title=articles[0].title,
-            article_text=content.text,
-        )
-    except (ValueError, ArticleSummaryError) as exc:
-        print(f"Error: {exc}", file=sys.stderr)
-        return 1
-
-    print()
-    print("Overview:")
-    print(summary.overview)
-
-    print("\nKey points:")
-    for point in summary.key_points:
-        print(f"- {point}")
-
-    print("\nWhy it matters:")
-    print(summary.why_it_matters)
-    print()
 
     return 0
 
