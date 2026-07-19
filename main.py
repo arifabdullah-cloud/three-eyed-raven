@@ -4,9 +4,8 @@ import sys
 from dotenv import load_dotenv
 
 from models.news_article import NewsArticle
-from tools.reader import ArticleReadError, read_article
 from tools.rss import RSSFeedError, fetch_articles
-from tools.summarizer import ArticleSummaryError, summarize_article
+from services.report_builder import build_daily_report
 
 
 DEFAULT_FEED_URL = "https://www.wired.com/feed/tag/ai/latest/rss"
@@ -19,38 +18,34 @@ def main() -> int:
     max_articles = get_max_articles()
 
     print("=" * 60)
-    print("Three-Eyed Raven")
+    print("Building daily report...")
     print("=" * 60)
-    print("\nFetching latest AI news...\n")
+    print()
 
     try:
-        articles = fetch_articles(
-            feed_url=feed_url,
-            max_articles=max_articles,
+        report = build_daily_report(
+            topic="Artificial Intelligence",
+            articles=articles,
         )
-    except (ValueError, RSSFeedError) as exc:
+    except ValueError as exc:
         print(f"Error: {exc}", file=sys.stderr)
         return 1
 
-    if not articles:
-        print("No articles were found.")
-        return 0
-
-    print(f"Retrieved {len(articles)} article(s).\n")
-
-    for position, article in enumerate(articles, start=1):
-        print_article(position, article)
-
     print("=" * 60)
-    print("Reading first article...")
+    print("Report completed")
     print("=" * 60)
+    print(f"Topic: {report.topic}")
+    print(f"Generated: {report.generated_at.isoformat()}")
+    print(f"Successful summaries: {len(report.items)}")
+    print()
 
-    try:
-        content = read_article(articles[0].url)
-    except (ValueError, ArticleReadError) as exc:
-        print(f"Error: {exc}", file=sys.stderr)
-        return 1
+    for position, item in enumerate(report.items, start=1):
+        print(f"{position}. {item.article.title}")
+        print(f"   Overview: {item.summary.overview}")
+        print()
 
+    return 0
+    
     print(f"\nExtracted {len(content.text)} characters.\n")
     print(content.text[:1000])
     print("\n[Output truncated]")
