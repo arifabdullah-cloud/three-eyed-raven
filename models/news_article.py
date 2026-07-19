@@ -1,7 +1,7 @@
-from dataclasses import dataclass
+from pydantic import BaseModel
 
-@dataclass(frozen=True)
-class NewsArticle:
+
+class NewsArticle(BaseModel):
     title: str
     source: str
     published: str
