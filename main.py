@@ -67,6 +67,17 @@ def main() -> int:
         print(f"   Overview: {item.summary.overview}")
         print()
 
+    try:
+        output_path = write_daily_report(report)
+    except OSError as exc:
+        print(
+            f"Error writing report: {exc}",
+            file=sys.stderr,
+        )
+        return 1
+
+    print(f"Report written to: {output_path}")
+
     return 0
 
 def get_max_articles() -> int:
