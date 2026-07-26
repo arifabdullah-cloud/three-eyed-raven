@@ -82,26 +82,27 @@ def test_article_reader(article: NewsArticle) -> None:
     print(f"URL: {article.url}")
 
     try:
-        content = read_article(article.url)
+        article_content = read_article(article.url)
     except ArticleReadError as exc:
         print(f"\nUnable to read article: {exc}")
         return
 
+    content_text = article_content.content
+
     print("\nArticle extracted successfully.")
-    print(f"Extracted characters: {len(content)}")
+    print(f"Extracted characters: {len(content_text)}")
 
     preview_length = 500
-    preview = content[:preview_length]
+    preview = content_text[:preview_length]
 
     print("\nContent preview:")
     print("-" * 60)
     print(preview)
 
-    if len(content) > preview_length:
+    if len(content_text) > preview_length:
         print("...")
 
     print("-" * 60)
-
 
 def get_max_articles() -> int:
     raw_value = os.getenv("MAX_ARTICLES", "5")
