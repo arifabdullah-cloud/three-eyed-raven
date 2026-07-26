@@ -87,7 +87,7 @@ def test_article_reader(article: NewsArticle) -> None:
         print(f"\nUnable to read article: {exc}")
         return
 
-    content_text = article_content.content
+    content_text = article_content.text
 
     print("\nArticle extracted successfully.")
     print(f"Extracted characters: {len(content_text)}")
