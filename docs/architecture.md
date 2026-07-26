@@ -1,231 +1,215 @@
-# Three-Eyed Raven Architecture
+# Three-Eyed Raven
 
-## Overview
+Three-Eyed Raven is a Python-based AI news reporting tool that automatically collects the latest Artificial Intelligence news from RSS feeds, extracts the main article content, summarises each article using an LLM, and generates a structured daily report in Markdown format.
 
-Three-Eyed Raven is designed around a simple principle:
-
-> Each component should have one clear responsibility.
-
-Rather than placing all logic inside a single script, the application is organized into layers that separate data models, external integrations, orchestration, and output generation.
-
-This architecture keeps the project easy to understand, test, extend, and maintain as new capabilities are added.
+The project is intended as a learning exercise in building AI-powered applications using clean software architecture, structured data models, and external APIs.
 
 ---
 
-# High-Level Architecture
+## Features
 
-```text
-                         main.py
-                            │
-                            ▼
-                  Report Builder Service
-                            │
-         ┌──────────────────┼──────────────────┐
-         │                  │                  │
-         ▼                  ▼                  ▼
-     RSS Tool         Reader Tool      Summarizer Tool
-         │                  │                  │
-         └──────────────────┼──────────────────┘
-                            ▼
-                         Data Models
-                            │
-                            ▼
-                 (Future) Markdown Renderer
-                            │
-                            ▼
-                     Generated Report
+- Retrieve AI news from RSS feeds
+- Extract article content from web pages
+- Summarise articles using OpenAI GPT models
+- Generate structured daily reports
+- Export reports as Markdown
+- Configuration through environment variables
+- Modular architecture for future extension
+
+---
+
+## Project Structure
+
+```
+three-eyed-raven/
+├── docs/
+├── output/
+├── src/
+├── tests/
+├── .env
+├── .env.example
+├── main.py
+├── requirements.txt
+└── README.md
 ```
 
 ---
 
-# Data Flow
+## Architecture
 
-The application currently follows a straightforward pipeline.
-
-```text
+```
 RSS Feed
     │
     ▼
-NewsArticle
+RSS Fetcher
     │
     ▼
-ArticleContent
+Content Extractor
     │
     ▼
-ArticleSummary
+NewsArticle Models
     │
     ▼
-DailyReport
+Report Builder
     │
     ▼
-Markdown Report (planned)
-```
-
-Each stage transforms data into a richer representation without modifying previous stages.
-
----
-
-# Architectural Principles
-
-## 1. Models represent data
-
-The `models` package defines the application's core data structures.
-
-Models should:
-
-* represent business data
-* validate data where appropriate
-* contain little or no business logic
-
-Examples:
-
-* NewsArticle
-* ArticleSummary
-* DailyReport
-
-Models should not perform network requests or interact with external systems.
-
----
-
-## 2. Tools perform one external capability
-
-The `tools` package contains integrations with systems outside the application.
-
-Each tool has one responsibility.
-
-Examples include:
-
-* retrieving RSS feeds
-* downloading article content
-* interacting with an LLM
-
-Tools should not coordinate workflows or call unrelated tools.
-
----
-
-## 3. Services orchestrate workflows
-
-Services coordinate multiple tools to achieve a business objective.
-
-A service represents a use case rather than an external integration.
-
-For example, building a daily report requires:
-
-* retrieving article content
-* summarizing articles
-* collecting successful results
-* handling failures
-
-The service coordinates these steps while each tool remains focused on its own responsibility.
-
----
-
-## 4. Renderers generate output
-
-Renderers convert application data into presentation formats.
-
-Future renderers may include:
-
-* Markdown
-* HTML
-* Email
-* PDF
-* JSON
-
-Renderers should never fetch data or perform business logic.
-
-Their only responsibility is presentation.
-
----
-
-## 5. main.py is the application entry point
-
-The responsibility of `main.py` is to:
-
-* load configuration
-* invoke application services
-* handle top-level errors
-* display execution progress
-
-Business logic should remain outside of `main.py`.
-
----
-
-# Repository Structure
-
-| Directory    | Responsibility                                     |
-| ------------ | -------------------------------------------------- |
-| `models/`    | Application data structures.                       |
-| `tools/`     | External integrations and system interactions.     |
-| `services/`  | Business workflows that coordinate multiple tools. |
-| `renderers/` | Output generation and presentation.                |
-| `output/`    | Generated reports and artifacts.                   |
-| `docs/`      | Project documentation.                             |
-
----
-
-# Error Handling Strategy
-
-Errors should be handled as close as possible to where they occur.
-
-Individual components should raise meaningful exceptions.
-
-Higher-level services decide whether execution should continue or stop.
-
-For example, if one article cannot be summarized, the report should continue processing the remaining articles rather than failing completely.
-
----
-
-# Current Architecture
-
-Current workflow:
-
-```text
-Fetch RSS
+OpenAI GPT
     │
     ▼
-Read article
+DailyReport Model
     │
     ▼
-Summarize article
+Markdown Renderer
     │
     ▼
-Build DailyReport
+output/YYYY-MM-DD-ai-report.md
 ```
 
 ---
 
-# Planned Architecture
+## Requirements
 
-The next planned enhancement introduces report rendering.
-
-```text
-Fetch RSS
-    │
-    ▼
-Read article
-    │
-    ▼
-Summarize article
-    │
-    ▼
-Build DailyReport
-    │
-    ▼
-Render Markdown
-    │
-    ▼
-Save Report
-```
-
-Longer term, an autonomous planning layer will coordinate these capabilities to support more advanced research and reporting workflows.
+- Python 3.9+
+- OpenAI API Key
 
 ---
 
-# Design Philosophy
+## Installation
 
-Three-Eyed Raven is intentionally built incrementally.
+Clone the repository.
 
-Rather than introducing complex frameworks from the beginning, each capability is implemented independently and then composed into larger workflows.
+```bash
+git clone <repository-url>
+cd three-eyed-raven
+```
 
-The objective is to understand the fundamentals of agentic systems before introducing advanced concepts such as memory, planning, autonomous decision making, or multi-agent collaboration.
+Create a virtual environment.
+
+```bash
+python -m venv .venv
+```
+
+Activate it.
+
+macOS/Linux
+
+```bash
+source .venv/bin/activate
+```
+
+Windows
+
+```powershell
+.venv\Scripts\activate
+```
+
+Install dependencies.
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+## Configuration
+
+Create a `.env` file.
+
+Example:
+
+```env
+OPENAI_API_KEY=your_api_key
+OPENAI_MODEL=gpt-5-mini
+```
+
+Additional configuration options may be added as the project evolves.
+
+---
+
+## Usage
+
+Run the application.
+
+```bash
+python main.py
+```
+
+A successful execution will:
+
+1. Retrieve the latest AI news
+2. Extract article content
+3. Generate AI summaries
+4. Produce a Markdown report
+
+Reports are written to:
+
+```
+output/YYYY-MM-DD-ai-report.md
+```
+
+---
+
+## Example Output
+
+```
+Artificial Intelligence Daily Report
+
+Generated:
+2026-07-26T02:35:38+00:00
+
+Articles included: 5
+
+1. Article Title
+
+Source:
+Published:
+URL:
+
+Overview
+...
+```
+
+---
+
+## Current Limitations
+
+- Supports a single RSS source
+- Reports are generated in Markdown only
+- No historical storage
+- No scheduling
+- No duplicate article detection
+
+---
+
+## Roadmap
+
+Planned improvements include:
+
+- Multiple RSS sources
+- HTML report generation
+- Email delivery
+- Report history
+- Duplicate article detection
+- Article categorisation
+- Scheduled execution
+- Additional output formats
+
+---
+
+## Learning Objectives
+
+This project focuses on:
+
+- Python application design
+- AI integration
+- Prompt engineering
+- API consumption
+- Structured data modelling
+- Clean software architecture
+- Software documentation
+
+---
+
+## License
+
+This project is intended for learning and portfolio purposes.
