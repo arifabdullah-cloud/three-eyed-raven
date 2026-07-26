@@ -1,65 +1,30 @@
-# Three-Eyed Raven
+# Architecture
 
-Three-Eyed Raven is a Python-based AI news reporting tool that automatically collects the latest Artificial Intelligence news from RSS feeds, extracts the main article content, summarises each article using an LLM, and generates a structured daily report in Markdown format.
+## Overview
 
-The project is intended as a learning exercise in building AI-powered applications using clean software architecture, structured data models, and external APIs.
-
----
-
-## Features
-
-- Retrieve AI news from RSS feeds
-- Extract article content from web pages
-- Summarise articles using OpenAI GPT models
-- Generate structured daily reports
-- Export reports as Markdown
-- Configuration through environment variables
-- Modular architecture for future extension
+Three-Eyed Raven follows a linear processing pipeline. Each module has a single responsibility, making the application easier to understand, maintain, and extend.
 
 ---
 
-## Project Structure
-
-```
-three-eyed-raven/
-├── docs/
-├── output/
-├── src/
-├── tests/
-├── .env
-├── .env.example
-├── main.py
-├── requirements.txt
-└── README.md
-```
-
----
-
-## Architecture
+## High-Level Flow
 
 ```
 RSS Feed
     │
     ▼
-RSS Fetcher
+tools/rss.py
     │
     ▼
-Content Extractor
+tools/reader.py
     │
     ▼
-NewsArticle Models
+tools/summarizer.py
     │
     ▼
-Report Builder
+services/report_builder.py
     │
     ▼
-OpenAI GPT
-    │
-    ▼
-DailyReport Model
-    │
-    ▼
-Markdown Renderer
+services/markdown_renderer.py
     │
     ▼
 output/YYYY-MM-DD-ai-report.md
@@ -67,149 +32,105 @@ output/YYYY-MM-DD-ai-report.md
 
 ---
 
-## Requirements
+## Components
 
-- Python 3.9+
-- OpenAI API Key
+### `main.py`
 
----
+Application entry point.
 
-## Installation
-
-Clone the repository.
-
-```bash
-git clone <repository-url>
-cd three-eyed-raven
-```
-
-Create a virtual environment.
-
-```bash
-python -m venv .venv
-```
-
-Activate it.
-
-macOS/Linux
-
-```bash
-source .venv/bin/activate
-```
-
-Windows
-
-```powershell
-.venv\Scripts\activate
-```
-
-Install dependencies.
-
-```bash
-pip install -r requirements.txt
-```
+Initialises and executes the news reporting workflow.
 
 ---
 
-## Configuration
+### `agent.py`
 
-Create a `.env` file.
-
-Example:
-
-```env
-OPENAI_API_KEY=your_api_key
-OPENAI_MODEL=gpt-5-mini
-```
-
-Additional configuration options may be added as the project evolves.
+Coordinates the application's end-to-end workflow by orchestrating the different components.
 
 ---
 
-## Usage
+### `tools/rss.py`
 
-Run the application.
+Responsible for:
 
-```bash
-python main.py
-```
-
-A successful execution will:
-
-1. Retrieve the latest AI news
-2. Extract article content
-3. Generate AI summaries
-4. Produce a Markdown report
-
-Reports are written to:
-
-```
-output/YYYY-MM-DD-ai-report.md
-```
+- Retrieving RSS feeds
+- Parsing feed entries
+- Creating article metadata
 
 ---
 
-## Example Output
+### `tools/reader.py`
 
-```
-Artificial Intelligence Daily Report
+Responsible for:
 
-Generated:
-2026-07-26T02:35:38+00:00
-
-Articles included: 5
-
-1. Article Title
-
-Source:
-Published:
-URL:
-
-Overview
-...
-```
+- Downloading article pages
+- Extracting readable content
+- Removing unnecessary HTML
 
 ---
 
-## Current Limitations
+### `tools/summarizer.py`
 
-- Supports a single RSS source
-- Reports are generated in Markdown only
-- No historical storage
-- No scheduling
-- No duplicate article detection
+Responsible for:
+
+- Preparing prompts
+- Calling the configured OpenAI model
+- Returning structured summaries
 
 ---
 
-## Roadmap
+### `models/`
 
-Planned improvements include:
+Contains the application's data models.
+
+Current models include:
+
+- `NewsArticle`
+- `ArticleSummary`
+- `DailyReport`
+
+These models provide a structured representation of data throughout the processing pipeline.
+
+---
+
+### `services/report_builder.py`
+
+Builds the final `DailyReport` by combining article metadata and generated summaries.
+
+---
+
+### `services/markdown_renderer.py`
+
+Converts the completed `DailyReport` into Markdown and writes it to the `output` directory.
+
+---
+
+## Design Principles
+
+### Separation of Concerns
+
+Each module has a clearly defined responsibility.
+
+### Modularity
+
+Components can be modified or replaced independently with minimal impact on the rest of the application.
+
+### Configurability
+
+Application configuration is managed through environment variables rather than hardcoded values.
+
+### Extensibility
+
+The architecture supports future enhancements such as additional news sources, alternative LLM providers, new output formats, and scheduled execution.
+
+---
+
+## Future Enhancements
+
+Potential future improvements include:
 
 - Multiple RSS sources
 - HTML report generation
 - Email delivery
 - Report history
 - Duplicate article detection
-- Article categorisation
 - Scheduled execution
-- Additional output formats
-
----
-
-## Learning Objectives
-
-This project focuses on:
-
-- Python application design
-- AI integration
-- Prompt engineering
-- API consumption
-- Structured data modelling
-- Clean software architecture
-- Software documentation
-
----
-
-## License
-
-This project is intended for learning and portfolio purposes.
