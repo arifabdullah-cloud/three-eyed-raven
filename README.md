@@ -1,8 +1,8 @@
 # Three-Eyed Raven
 
-Three-Eyed Raven is a Python-based AI news reporting tool that automatically collects the latest Artificial Intelligence news from RSS feeds, extracts the main article content, summarises each article using an LLM, and generates a structured daily report in Markdown format.
+Three-Eyed Raven is a Python-based AI news reporting application that automatically collects the latest Artificial Intelligence news from RSS feeds, extracts article content, summarises each article using an LLM, and generates a structured daily report in Markdown format.
 
-The project is intended as a learning exercise in building AI-powered applications using clean software architecture, structured data models, and external APIs.
+The project serves as a practical exercise in building AI-powered applications using modular software design, structured data models, and external APIs.
 
 ---
 
@@ -12,26 +12,36 @@ The project is intended as a learning exercise in building AI-powered applicatio
 - Extract article content from web pages
 - Summarise articles using OpenAI GPT models
 - Generate structured daily reports
-- Export reports as Markdown
-- Configuration through environment variables
-- Modular architecture for future extension
+- Export reports in Markdown format
+- Configurable using environment variables
+- Modular architecture for future enhancements
 
 ---
 
 ## Project Structure
 
-```
+```text
 three-eyed-raven/
 ├── docs/
+├── models/
 ├── output/
-├── src/
-├── tests/
-├── .env
-├── .env.example
+├── services/
+├── tools/
+├── ROADMAP.md
+├── agent.py
 ├── main.py
-├── requirements.txt
-└── README.md
+└── requirements.txt
 ```
+
+### Directory Overview
+
+| Directory | Purpose |
+|-----------|---------|
+| `docs/` | Project documentation |
+| `models/` | Data models used throughout the application |
+| `services/` | Business logic and report generation |
+| `tools/` | Components for RSS retrieval, article extraction and summarisation |
+| `output/` | Generated Markdown reports |
 
 ---
 
@@ -41,35 +51,29 @@ three-eyed-raven/
 RSS Feed
     │
     ▼
-RSS Fetcher
+RSS Reader
     │
     ▼
-Content Extractor
+Article Reader
     │
     ▼
-NewsArticle Models
+OpenAI Summariser
     │
     ▼
 Report Builder
     │
     ▼
-OpenAI GPT
-    │
-    ▼
-DailyReport Model
-    │
-    ▼
 Markdown Renderer
     │
     ▼
-output/YYYY-MM-DD-ai-report.md
+Daily Report (.md)
 ```
 
 ---
 
 ## Requirements
 
-- Python 3.9+
+- Python 3.9 or later
 - OpenAI API Key
 
 ---
@@ -83,23 +87,19 @@ git clone <repository-url>
 cd three-eyed-raven
 ```
 
-Create a virtual environment.
+Create and activate a virtual environment.
+
+macOS / Linux
 
 ```bash
 python -m venv .venv
-```
-
-Activate it.
-
-macOS/Linux
-
-```bash
 source .venv/bin/activate
 ```
 
 Windows
 
 ```powershell
+python -m venv .venv
 .venv\Scripts\activate
 ```
 
@@ -115,14 +115,10 @@ pip install -r requirements.txt
 
 Create a `.env` file.
 
-Example:
-
 ```env
 OPENAI_API_KEY=your_api_key
 OPENAI_MODEL=gpt-5-mini
 ```
-
-Additional configuration options may be added as the project evolves.
 
 ---
 
@@ -134,16 +130,17 @@ Run the application.
 python main.py
 ```
 
-A successful execution will:
+The application will:
 
 1. Retrieve the latest AI news
 2. Extract article content
 3. Generate AI summaries
-4. Produce a Markdown report
+4. Build a daily report
+5. Save the report as a Markdown file
 
-Reports are written to:
+Generated reports are written to:
 
-```
+```text
 output/YYYY-MM-DD-ai-report.md
 ```
 
@@ -173,9 +170,11 @@ Overview
 
 ## Current Limitations
 
-- Supports a single RSS source
-- Reports are generated in Markdown only
-- No historical storage
+Current limitations include:
+
+- Single RSS feed
+- Markdown output only
+- No report history
 - No scheduling
 - No duplicate article detection
 
@@ -183,16 +182,7 @@ Overview
 
 ## Roadmap
 
-Planned improvements include:
-
-- Multiple RSS sources
-- HTML report generation
-- Email delivery
-- Report history
-- Duplicate article detection
-- Article categorisation
-- Scheduled execution
-- Additional output formats
+See [ROADMAP.md](ROADMAP.md) for planned features and future improvements.
 
 ---
 
@@ -205,8 +195,8 @@ This project focuses on:
 - Prompt engineering
 - API consumption
 - Structured data modelling
-- Clean software architecture
-- Software documentation
+- Software architecture
+- Technical documentation
 
 ---
 
