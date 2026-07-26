@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 
 from models.news_article import NewsArticle
 from services.report_builder import build_daily_report
+from tools.reader import ArticleReadError, read_article
 from tools.rss import RSSFeedError, fetch_articles
 
 
@@ -40,7 +41,9 @@ def main() -> int:
     for position, article in enumerate(articles, start=1):
         print_article(position, article)
 
-    print("=" * 60)
+    test_article_reader(articles[0])
+
+    print("\n" + "=" * 60)
     print("Building daily report...")
     print("=" * 60)
     print()
@@ -68,6 +71,36 @@ def main() -> int:
         print()
 
     return 0
+
+
+def test_article_reader(article: NewsArticle) -> None:
+    print("\n" + "=" * 60)
+    print("Testing article reader")
+    print("=" * 60)
+
+    print(f"\nReading: {article.title}")
+    print(f"URL: {article.url}")
+
+    try:
+        content = read_article(article.url)
+    except ArticleReadError as exc:
+        print(f"\nUnable to read article: {exc}")
+        return
+
+    print("\nArticle extracted successfully.")
+    print(f"Extracted characters: {len(content)}")
+
+    preview_length = 500
+    preview = content[:preview_length]
+
+    print("\nContent preview:")
+    print("-" * 60)
+    print(preview)
+
+    if len(content) > preview_length:
+        print("...")
+
+    print("-" * 60)
 
 
 def get_max_articles() -> int:
